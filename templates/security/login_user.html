@@ -1,0 +1,179 @@
+{% extends "security/base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field, render_field_errors, render_form_errors, prop_next %}
+
+{% block content %}
+  {% include "security/_messages.html" %}
+  <div class="auth-card">
+    <h2 class="fs-center fs-important">{{ _fsdomain('Login') }}</h2>
+    <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form">
+      {{ login_user_form.hidden_tag() }}
+      {{ render_form_errors(login_user_form) }}
+      
+      <!-- Email Field -->
+      {% if "email" in identity_attributes %}
+        <div class="form-group">
+          {{ render_field_with_errors(login_user_form.email, class_='form-control', placeholder=_fsdomain('Email Address')) }}
+        </div>
+      {% endif %}
+      
+      <!-- Username Field -->
+      {% if login_user_form.username and "username" in identity_attributes %}
+        {% if "email" in identity_attributes %}<h3>{{ _fsdomain("or") }}</h3>{% endif %}
+        <div class="form-group">
+          {{ render_field_with_errors(login_user_form.username, class_='form-control', placeholder=_fsdomain('Username')) }}
+        </div>
+      {% endif %}
+      
+      <!-- Password Field -->
+      <div class="fs-gap form-group">
+        {{ render_field_with_errors(login_user_form.password, class_='form-control', placeholder=_fsdomain('Password')) }}
+      </div>
+
+      <!-- Remember Me Checkbox -->
+      <div class="form-group">
+        {{ render_field_with_errors(login_user_form.remember, class_='form-check-input') }}
+        <!-- <label class="form-check-label" for="remember">{{ login_user_form.remember.label.text }}</label> -->
+      </div>
+
+      <div>
+
+        <!-- Forgot Password Link -->
+            
+        
+          <a href="{{ url_for_security('forgot_password') }}">{{ _fsdomain('Forgot password') }}</a>
+       
+
+
+      </div>
+      
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button type="submit" class="btn btn-custom">{{ _fsdomain('Continue') }}</button>
+      </div>
+
+      <!-- CSRF Token -->
+      {{ render_field_errors(login_user_form.csrf_token) }}
+    </form>
+
+    <!-- WebAuthn Section -->
+    {% if security.webauthn %}
+      <hr class="fs-gap">
+      <h2>{{ _fsdomain("Use WebAuthn to Sign In") }}</h2>
+      <div>
+        <form method="get" id="wan_signin_form" name="wan_signin_form">
+          <input id="wan_signin" name="wan_signin" type="submit" value="{{ _fsdomain('Sign in with WebAuthn') }}" formaction="{{ url_for_security('wan_signin') }}{{ prop_next() }}" class="btn btn-social">
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- Social Oauth Section -->
+    {% if security.oauthglue %}
+      <hr class="fs-gap">
+      <h2>{{ _fsdomain("Use Social Oauth to Sign In") }}</h2>
+      {% for provider in security.oauthglue.provider_names %}
+        <div class="fs-gap">
+          <form method="post" id="{{ provider }}_form" name="{{ provider }}_form">
+            <input id="{{ provider }}" name="{{ provider }}" type="submit" value="{{ _fsdomain('Sign in with ')~provider }}" formaction="{{ url_for_security('oauthstart', name=provider) }}{{ prop_next() }}" class="btn btn-social">
+            {% if csrf_token is defined %}
+              <input id="{{ provider }}_csrf_token" name="{{ provider }}_csrf_token" type="hidden" value="{{ csrf_token() }}">
+            {% endif %}
+          </form>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+
+    
+    <!-- Register Link -->
+    <p class="fs-center">
+      Don't have an account? <a href="{{ url_for_security('register') }}{%- if 'next' in request.args -%}?next={{ request.args.next|urlencode }}{%- endif -%}">{{ _fsdomain('Register') }}</a>
+    </p>
+  </div>
+{% endblock content %}
+
+{% block styles %}
+  <style>
+    /* Custom Styles */
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .auth-card {
+      background-color: #fff;
+      color: #333;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .fs-center { text-align: center; }
+    .fs-important { font-size: 2.5rem; font-weight: 700; }
+
+    .form-control {
+      background: #f0f4f7;
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .form-control:focus {
+      background: #e6ecf1;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+      font-weight: 400;
+    }
+
+    .btn-custom {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+      color: #fff;
+    }
+
+    .btn-social {
+      background-color: #f7f9fc;
+      color: #333;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    .btn-social:hover {
+      background-color: #e3e7ed;
+      color: #333;
+    }
+  </style>
+{% endblock styles %}

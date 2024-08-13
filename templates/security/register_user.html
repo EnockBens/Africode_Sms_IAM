@@ -1,0 +1,161 @@
+{% extends "security/base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field, render_field_errors, render_form_errors, prop_next %}
+
+{% block content %}
+  {% include "security/_messages.html" %}
+  <div class="auth-card">
+    <h2 class="fs-center fs-important">{{ _fsdomain('Register') }}</h2>
+    <form action="{{ url_for_security('register') }}{{ prop_next() }}" method="post" name="register_user_form">
+      {{ register_user_form.hidden_tag() }}
+      {{ render_form_errors(register_user_form) }}
+      
+      <!-- Email Field -->
+      <div class="form-group">
+        {{ render_field_with_errors(register_user_form.email, class_='form-control', placeholder=_fsdomain('Email Address')) }}
+      </div>
+
+      <!-- Username Field (if enabled) -->
+      {% if config["SECURITY_USERNAME_ENABLE"] %}
+        <div class="form-group">
+          {{ render_field_with_errors(register_user_form.username, class_='form-control', placeholder=_fsdomain('Username')) }}
+        </div>
+      {% endif %}
+      
+      <!-- Password Field -->
+      <div class="fs-gap form-group">
+        {{ render_field_with_errors(register_user_form.password, class_='form-control', placeholder=_fsdomain('Password')) }}
+      </div>
+
+      <!-- Password Confirmation Field (if present) -->
+      {% if register_user_form.password_confirm %}
+        <div class="fs-gap form-group">
+          {{ render_field_with_errors(register_user_form.password_confirm, class_='form-control', placeholder=_fsdomain('Confirm Password')) }}
+        </div>
+      {% endif %}
+      
+      <!-- Submit Button -->
+      <div class="form-group">
+        <button type="submit" class="btn btn-custom">{{ _fsdomain('Continue') }}</button>
+      </div>
+
+      <!-- CSRF Token -->
+      {{ render_field_errors(register_user_form.csrf_token) }}
+    </form>
+
+    <!-- Login Link -->
+    <p class="fs-center">
+      Already have an account? <a href="{{ url_for_security('login') }}{%- if 'next' in request.args -%}?next={{ request.args.next|urlencode }}{%- endif -%}">{{ _fsdomain('Login') }}</a>
+    </p>
+
+    <!-- Resend Confirmation Link -->
+    <p class="fs-center">
+      Didn't receive the confirmation email? <a href="{{ url_for_security('send_confirmation') }}{%- if 'next' in request.args -%}?next={{ request.args.next|urlencode }}{%- endif -%}">{{ _fsdomain('Resend ') }}</a>
+    </p>
+  </div>
+{% endblock content %}
+
+{% block styles %}
+  <style>
+    /* Custom Styles */
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .auth-card {
+      background-color: #fff;
+      color: #333;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .fs-center { text-align: center; }
+    .fs-important { font-size: 2.5rem; font-weight: 700; }
+
+    .form-control {
+      background: #f0f4f7;
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .form-control:focus {
+      background: #e6ecf1;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .form-control::placeholder {
+      color: #aaa;
+      font-weight: 400;
+    }
+
+    .btn-custom {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+      color: #fff;
+    }
+
+    .btn-social {
+      background-color: #f7f9fc;
+      color: #333;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    .btn-social:hover {
+      background-color: #e3e7ed;
+      color: #333;
+    }
+
+    .field-errors {
+      margin-top: 0.5rem;
+      color: #d9534f;
+    }
+
+    .error-message {
+      background-color: #f2dede;
+      border: 1px solid #ebccd1;
+      color: #a94442;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-errors {
+      margin-top: 1rem;
+      color: #d9534f;
+    }
+  </style>
+{% endblock styles %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ course.name }}</h1>
+<p>Teacher: {{ course.teacher.email }}</p>
+
+{% if current_user.has_role('Teacher') and current_user.id == course.teacher_id %}
+    <h2>Students</h2>
+    <ul>
+        {% for enrollment in course.enrollments %}
+        <li>
+            {{ enrollment.student.email }}
+            <form method="POST" action="{{ url_for('grade', enrollment_id=enrollment.id) }}" class="d-inline">
+                <input type="number" name="grade" step="0.1" min="0" max="100" value="{{ enrollment.grade or '' }}" required>
+                <button type="submit" class="btn btn-primary btn-sm">Submit Grade</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+
+{% elif current_user.has_role('Student') %}
+    <h2>Your Grade</h2>
+    {% set enrollment = current_user.enrollments|selectattr("course_id", "equalto", course.id)|first %}
+    {% if enrollment %}
+        {% if enrollment.grade is not none %}
+            <p>Your grade: {{ enrollment.grade }}</p>
+        {% else %}
+            <p>Your grade has not been submitted yet.</p>
+        {% endif %}
+    {% else %}
+        <p>You are not enrolled in this course.</p>
+        <a href="{{ url_for('enroll', course_id=course.id) }}" class="btn btn-primary">Enroll</a>
+    {% endif %}
+{% endif %}
+{% endblock %}
