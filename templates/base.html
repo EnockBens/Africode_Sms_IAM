@@ -5,21 +5,153 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  
     {% block styles %}
-        <!-- Bootstrap CSS -->
-        {{ bootstrap.load_css() }}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    
+    <!-- Custom CSS -->
+    <style>
+        /* Full-screen background image */
+        body {
+            background: url('{{ url_for("static", filename="images/background.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Content container for centering */
+        .content-container {
+            text-align: left;
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4); /* Slight overlay for better text readability */
+            border-radius: 10px;
+        }
+
+        /* Heading styles */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* Subheading styles */
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+            font-weight: normal;
+        }
+
+        /* Button styles similar to the design */
+        .btn-option {
+            background-color: rgba(255, 255, 255, 0.15); /* Slightly transparent background */
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            text-align: left;
+            display: block;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-option:hover {
+            background-color: rgba(255, 255, 255, 0.3); /* Slightly less transparent on hover */
+        }
+
+        /* Top-right buttons */
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+        }
+
+        .top-right-buttons a {
+            color: #fff;
+            margin-left: 15px;
+            font-weight: normal;
+            display: block; /* Displaying each link as block to stack them vertically */
+            margin-bottom: 10px;
+        }
+
+        /* Logout button */
+        .logout-button {
+            background-color: rgba(255, 255, 255, 0.15); /* Match button styles */
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .logout-button:hover {
+            background-color: rgba(255, 255, 255, 0.3); /* Slightly less transparent on hover */
+        }
+
+        /* Back button */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.15); /* Match button styles */
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3); /* Slightly less transparent on hover */
+        }
+    </style>
     {% endblock %}
 
-    <title>SMS</title>
+    <title>Find Your Calm | SMS</title>
     {% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+    <!-- Back button -->
+    <a href="javascript:history.back()" class="back-button">&larr; Back</a>
+    
+    {% block content %}
+    <div class="content-container">
+        <h1>Find Your Calm</h1>
+        <h2>Our goal is to help you improve your health and happiness.<br>What can we help with today?</h2>
+        
+        <a href="#" class="btn btn-option">Improve sleep quality</a>
+        <a href="#" class="btn btn-option">Reduce stress or anxiety</a>
+        <a href="#" class="btn btn-option">Improve focus</a>
+        <a href="#" class="btn btn-option">Self-improvement</a>
+        <a href="#" class="btn btn-option">Something else</a>
+    </div>
+
+    <!-- Top-right navigation and logout buttons -->
+    <div class="top-right-buttons">
+        <a href="#">For Business</a>
+        <a href="#">Log in</a>
+        <a href="#" class="btn btn-primary" style="border-radius: 20px; padding: 8px 15px;">Try Calm for Free</a>
+        <!-- Logout Button -->
+        <a href="{{ url_for('logout') }}" class="logout-button">Log out</a>
+    </div>
+    {% endblock %}
 
     {% block scripts %}
-        <!-- Optional JavaScript -->
-        {{ bootstrap.load_js() }}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
     {% endblock %}
 </body>
 </html>

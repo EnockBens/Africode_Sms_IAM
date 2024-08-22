@@ -1,63 +1,122 @@
-{% extends "base.html" %}
-
-{% block title %}Home | SMS{% endblock %}
-
-{% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Welcome to the School Management System</h1>
+{% extends "base.html" %}{% block content %} {% with messages =
+    get_flashed_messages(with_categories=true) %} {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show d-flex justify-content-between"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     
-    <div class="row">
+    <div class="container mt-5">
+      <h1 class="mb-4">Welcome to the School Management System</h1>
+    
+      <div class="row">
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Quick Stats</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Total Courses: {{ courses_count }}</li>
-                        <li class="list-group-item">Total Students: {{ students_count }}</li>
-                        <li class="list-group-item">Total Teachers: {{ teachers_count }}</li>
-                    </ul>
-                </div>
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Quick Stats</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  {% if current_user.has_role('Admin') %} Total Courses: {{
+                  courses_count }} {% else %} My Course(s): {{ courses_count }} {%
+                  endif %}
+                </li>
+                {% if students_count is not none %}
+                <li class="list-group-item">
+                  {% if current_user.has_role('Teacher') %} My Student(s): {{
+                  students_count }} {% else %} Total Students: {{ students_count }}
+                  {% endif %}
+                </li>
+                {% endif %} {% if teachers_count is not none %}
+                <li class="list-group-item">
+                  {% if current_user.has_role('Admin') %} Total Teachers: {{
+                  teachers_count }} {% else %} My Teacher(s): {{ teachers_count }}
+                  {% endif %}
+                </li>
+                {% endif %}
+              </ul>
             </div>
+          </div>
         </div>
-        
+    
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Your Information</h5>
-                    <p><strong>Email:</strong> {{ current_user.email }}</p>
-                    <p><strong>Roles:</strong> 
-                        {% for role in current_user.roles %}
-                            {{ role.name }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                        
-                    </p>
-                    {% if current_user.has_role('Student') %}
-                        <p><strong>Enrolled Courses:</strong> {{ current_user.enrollments|length }}</p>
-                    {% elif current_user.has_role('Teacher') %}
-                        <p><strong>Courses Teaching:</strong> {{ current_user.courses_taught|length }}</p>
-                    {% endif %}
-                    <a class="text-decoration-none text-center text-danger"    href="{{ url_for_security('logout') }}">{{ _fsdomain("Sign out") }}</a>
-                </div>
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Your Information</h5>
+              <p class="text-nowrap">
+                <strong>Email:</strong> <br />
+                {{ current_user.email }}
+              </p>
+              <p>
+                <strong>Roles:</strong> <br />
+                {% for role in current_user.roles %} {{ role.name }}{% if not
+                loop.last %}, {% endif %} {% endfor %}
+              </p>
+              <!-- {% if current_user.has_role('Student') %}
+              <p>
+                <strong>Enrolled Courses:</strong> {{
+                current_user.enrollments|length }}
+              </p>
+              {% elif current_user.has_role('Teacher') %}
+              <p>
+                <strong>Courses Teaching:</strong> {{
+                current_user.courses_taught|length }}
+              </p>
+              {% endif %} -->
             </div>
+          </div>
         </div>
-    </div>
-
-    <div class="row">
+      </div>
+    
+      <div class="row">
         <div class="col-md-12">
-            <h2 class="mb-3">Quick Actions</h2>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ url_for('courses') }}" class="btn btn-primary">View Courses</a>
-                {% if current_user.has_role('Admin') %}
-                    <a href="{{ url_for('create_course') }}" class="btn btn-success">Create New Course</a>
-                {% endif %}
-                {% if current_user.has_role('Student') %}
-                    <a href="#" class="btn btn-info">View My Grades</a>
-                {% endif %}
-                {% if current_user.has_role('Teacher') %}
-                    <a href="#" class="btn btn-warning">Manage My Courses</a>
-                {% endif %}
-            </div>
+          <h2 class="mb-3">Quick Actions</h2>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('courses') }}" class="btn btn-primary"
+              >View Courses</a
+            >
+            {% if current_user.has_role('Admin') %}
+            <a href="{{ url_for('create_course') }}" class="btn btn-success"
+              >Create New Course</a
+            >
+            <a href="{{ url_for('register_user') }}" class="btn btn-warning"
+              >Add User</a
+            >
+            <a href="{{ url_for('manage_courses') }}" class="btn btn-warning"
+              >Manage my courses</a
+            >
+            {% endif %} {% if current_user.has_role('Student') %}
+            <a
+              href="{{ url_for('course_details',course_id=course.id) }}"
+              class="btn btn-success"
+              >View My Grades</a
+            >
+            {% endif %} {% if current_user.has_role('Teacher') %}
+            <a
+              href="{{ url_for('manage_students', course_id=course.id )}}"
+              class="btn btn-warning"
+              >Manage Students
+            </a>
+            {% endif %}
+    
+            <a
+              href="{{ url_for_security('logout') }}"
+              class="text-decoration-none btn btn-danger"
+              >{{ _fsdomain("Logout") }}</a
+            >
+          </div>
         </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+    {% endblock %}

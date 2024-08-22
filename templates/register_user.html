@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% block content %} {% with messages =
+  get_flashed_messages(with_categories=true) %} {% if messages %}
+  <div class="container mt-3">
+    {% for category, message in messages %}
+    <div
+      class="alert alert-{{ category }} alert-dismissible fade show d-flex justify-content-between"
+      role="alert"
+    >
+      {{ message }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %} {% endwith %}
+  
+  <h2 >Register User</h2>
+ 
+
+
+  <form method="POST" action="{{ url_for('register_user') }}">
+
+    <br>
+    {{ form.hidden_tag() }}
+  
+    <div class="form-group">
+      {{ form.email.label(class="form-label") }} {{
+      form.email(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.password.label(class="form-label") }} {{
+      form.password(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.confirm_password.label(class="form-label") }} {{
+      form.confirm_password(class="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.role.label(class="form-label") }} {{ form.role(class="form-select")
+      }}
+    </div>
+    <div class="form-group mt-2 d-flex">
+      {{ form.submit(class="btn btn-primary justify-content-center") }}
+    </div>
+  </form>
+  
+  {{ course }} {% endblock %}

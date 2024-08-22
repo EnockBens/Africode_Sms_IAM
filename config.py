@@ -3,7 +3,8 @@ SECURITY_PASSWORD_SALT = '29620583801938585979065387498578790966'
 
 
 # Database configuration
-SQLALCHEMY_DATABASE_URI = 'postgresql://mac:Kipkorir2015@localhost:5432/sms'
+# SQLALCHEMY_DATABASE_URI = 'postgresql://mac:Kipkorir2015@localhost:5432/sms'
+SQLALCHEMY_DATABASE_URI ='postgresql://postgres:yUJENHToordCtPVvyJWqwGsuNhryHXYg@postgres.railway.internal:5432/railway'
 SQLALCHEMY_TRACK_MODIFICATIONS =False
 SQLALCHEMY_ENGINE_OPTIONS =  {"pool_pre_ping": True,}
 
