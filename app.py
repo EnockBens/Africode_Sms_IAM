@@ -97,9 +97,45 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 mail = Mail(app)
 
+# @app.route('/')
+# @login_required
+# def index():
+#     if current_user.has_role('Admin'):
+#         # Admin sees the total number of teachers, students, and courses
+#         courses_count = Course.query.count()
+#         students_count = User.query.join(User.roles).filter(Role.name == 'Student').count()
+#         teachers_count = User.query.join(User.roles).filter(Role.name == 'Teacher').count()
+#     elif current_user.has_role('Teacher'):
+#         # Teacher sees the total number of courses they are teaching and the students they are teaching
+#         courses_count = Course.query.filter_by(teacher_id=current_user.id).count()
+#         students_count = User.query.join(Enrollment).join(Course).filter(Course.teacher_id == current_user.id).distinct().count()
+#         teachers_count = None  # Not applicable for teachers, so set to None or 0
+#     elif current_user.has_role('Student'):
+#         # Student sees the total number of courses they are taking and the total number of teachers teaching them
+#         courses_count = Enrollment.query.filter_by(student_id=current_user.id).count()
+#         teachers_count = Course.query.join(Enrollment).filter(Enrollment.student_id == current_user.id).distinct(Course.teacher_id).count()
+#         students_count = None  # Not applicable for students, so set to None or 0
+#     else:
+#         flash('Access denied.', 'danger')
+#         return redirect(url_for('index'))
+
+#     return render_template('index.html',
+#                            course=Course.query.first(),  # For displaying a course
+#                            courses_count=courses_count,
+#                            students_count=students_count,
+#                            teachers_count=teachers_count,
+#                            title='Dashboard')
+
+ 
+
 @app.route('/')
 @login_required
 def index():
+    course = Course.query.first()  # For displaying a course
+    if course is None:
+        flash('No courses available.', 'warning')
+        course = None  # Ensure course is set to None if not found
+    
     if current_user.has_role('Admin'):
         # Admin sees the total number of teachers, students, and courses
         courses_count = Course.query.count()
@@ -120,13 +156,11 @@ def index():
         return redirect(url_for('index'))
 
     return render_template('index.html',
-                           course=Course.query.first(),  # For displaying a course
+                           course=course,
                            courses_count=courses_count,
                            students_count=students_count,
                            teachers_count=teachers_count,
                            title='Dashboard')
-
- 
 
 
 
