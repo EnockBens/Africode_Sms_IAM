@@ -118,36 +118,29 @@
             background-color: rgba(255, 255, 255, 0.3); /* Slightly less transparent on hover */
         }
     </style>
-    {% endblock %}
 
-    <title>Find Your Calm | SMS</title>
+<!-- Favicon -->
+<link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/jpg">
+
+
+    {% endblock %}
+{% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>School management system</title>
+    {% endif %}
     {% endblock %}
 </head>
 <body>
     <!-- Back button -->
     <a href="javascript:history.back()" class="back-button">&larr; Back</a>
     
-    {% block content %}
-    <div class="content-container">
-        <h1>Find Your Calm</h1>
-        <h2>Our goal is to help you improve your health and happiness.<br>What can we help with today?</h2>
-        
-        <a href="#" class="btn btn-option">Improve sleep quality</a>
-        <a href="#" class="btn btn-option">Reduce stress or anxiety</a>
-        <a href="#" class="btn btn-option">Improve focus</a>
-        <a href="#" class="btn btn-option">Self-improvement</a>
-        <a href="#" class="btn btn-option">Something else</a>
+   
+   
+    <div class="container">
+        {% block content %} {% endblock %}
     </div>
-
-    <!-- Top-right navigation and logout buttons -->
-    <div class="top-right-buttons">
-        <a href="#">For Business</a>
-        <a href="#">Log in</a>
-        <a href="#" class="btn btn-primary" style="border-radius: 20px; padding: 8px 15px;">Try Calm for Free</a>
-        <!-- Logout Button -->
-        <a href="{{ url_for('logout') }}" class="logout-button">Log out</a>
-    </div>
-    {% endblock %}
+   
 
     {% block scripts %}
     <!-- Optional JavaScript -->
