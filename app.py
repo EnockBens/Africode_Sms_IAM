@@ -170,6 +170,17 @@ def index():
 
 
 
+@app.before_request
+def restrict_authenticated_user():
+    # List of endpoints to restrict
+    restricted_endpoints = ['security.login', 'security.register']
+
+    # Check if the user is authenticated and trying to access a restricted endpoint
+    if current_user.is_authenticated and request.endpoint and request.endpoint in restricted_endpoints:
+        flash('You are already logged in.', 'info')
+        return redirect(url_for('index'))
+
+
 @app.route('/courses')
 @login_required
 def courses():
