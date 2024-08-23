@@ -32,7 +32,7 @@ MAIL_PORT = 587
 MAIL_USE_TLS = True
 MAIL_USERNAME = 'bensonkings81@gmail.com'
 MAIL_PASSWORD = 'vsazlawurlxgfpyv'
-MAIL_DEFAULT_SENDER = ('enockbenz294@gmail.com')
+MAIL_DEFAULT_SENDER = 'enockbenz294@gmail.com'
 
 #configure /reset
 SECURITY_RECOVERABLE = True
