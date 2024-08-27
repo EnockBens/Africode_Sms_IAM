@@ -1,4 +1,5 @@
-from flask import Flask, render_template,flash,url_for,redirect,request
+import os
+from flask import Flask, render_template,flash, send_from_directory,url_for,redirect,request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, UserMixin, RoleMixin, login_required, SQLAlchemyUserDatastore, hash_password, current_user,roles_required
@@ -134,6 +135,9 @@ def index():
 
  
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.jpg')
 
 
 # @app.before_request
